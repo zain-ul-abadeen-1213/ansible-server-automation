@@ -1,0 +1,27 @@
+# Three disposable Ubuntu "servers" for Ansible to configure.
+# Each one gets its own SSH port (for Ansible) and web port (for checking
+# the finished result) on the host.
+services:
+  node1:
+    build: .
+    container_name: ansible-node1
+    hostname: node1
+    ports:
+      - "2221:22"
+      - "8081:80"
+
+  node2:
+    build: .
+    container_name: ansible-node2
+    hostname: node2
+    ports:
+      - "2222:22"
+      - "8082:80"
+
+  node3:
+    build: .
+    container_name: ansible-node3
+    hostname: node3
+    ports:
+      - "2223:22"
+      - "8083:80"

@@ -1,0 +1,7 @@
+# PLACEHOLDER — replace this file with your own public key BEFORE building:
+#
+#   ssh-keygen -t ed25519 -f ~/.ssh/ansible_lab
+#   cp ~/.ssh/ansible_lab.pub targets/authorized_keys
+#
+# The Dockerfile copies this file into the deploy user's ~/.ssh/authorized_keys
+# inside every target container, which is what lets Ansible log in over SSH.
