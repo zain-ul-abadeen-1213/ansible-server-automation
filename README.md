@@ -120,6 +120,30 @@ curl http://127.0.0.1:8083/
 
 **Cleanup:** `cd targets && docker compose down` removes the lab. Rebuilding later is safe — the same keypair and inventory keep working.
 
-## Verified run
+## Verified run — 6 November 2026
 
-_Pending — this section will be filled in with the real run results (ping check, first playbook run, idempotent second run, and `verify.sh` output) once the lab has been executed end to end._
+The full lab was executed end to end on a local machine (Ansible core 2.22 as the control node, three Docker containers as targets):
+
+| Step | Result |
+|---|---|
+| Connectivity check (`ansible -m ping`) | ✅ All 3 nodes replied `pong` over SSH key auth |
+| First playbook run | ✅ node1/node2/node3: `ok=6, changed=4, failed=0` — Apache installed, page deployed, service started, restart handler fired |
+| Second playbook run (idempotency) | ✅ node1/node2/node3: `ok=5, changed=0, failed=0` — nothing changed, exactly as designed |
+| Live verification (`verify.sh`) | ✅ **Passed: 3/3** — each node serves its own page on ports 8081 / 8082 / 8083 |
+| Live page in the browser | ✅ The Zain Tech Automation Solutions page served by node1 on `localhost:8081`, showing "Configured by Ansible — served by node1" |
+
+**First run — configuration applied (PLAY RECAP):**
+
+![First playbook run recap](docs/01-first-run-recap.png)
+
+**Second run — idempotent, `changed=0` on every node (PLAY RECAP):**
+
+![Second playbook run recap](docs/02-idempotent-run-recap.png)
+
+**Verification — all three sites live:**
+
+![verify.sh output: 3 of 3 passed](docs/03-verify-pass.png)
+
+**The live page — served by node1:**
+
+![Live page served by node1](docs/04-live-page-node1.png)
