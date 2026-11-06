@@ -1,0 +1,41 @@
+---
+- name: Configure web servers
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Update the apt cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Install Apache and curl
+      ansible.builtin.apt:
+        name:
+          - apache2
+          - curl
+        state: present
+
+    - name: Deploy the web page
+      ansible.builtin.template:
+        src: index.html.j2
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: "0644"
+      notify: restart apache
+
+    - name: Ensure Apache is running
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: true
+      # Note: the target containers run no systemd. Ansible's service module
+      # detects this and falls back to the SysV init script
+      # (/etc/init.d/apache2), which starts Apache the classic way.
+
+  handlers:
+    - name: restart apache
+      ansible.builtin.service:
+        name: apache2
+        state: restarted
